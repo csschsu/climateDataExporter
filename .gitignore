@@ -1,0 +1,6 @@
+config.json
+/data/*.json
+*.iml
+.idea
+.idea/*
+out.log
