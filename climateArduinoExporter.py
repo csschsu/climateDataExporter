@@ -4,7 +4,7 @@ from prometheus_client import start_http_server, Gauge
 import datetime, time
 import json
 import serial
-from config import Config
+from setup import Config
 from check import DataError
 from check import ds18b20_parse
 from check import dht22_bmp280_parse
@@ -37,7 +37,6 @@ def read_arduino():
         else:
             buff = "unknown sensor"
             raise DataError
-
 
     except UnicodeError:
         print("Error reading arduino'")

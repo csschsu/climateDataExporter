@@ -1,4 +1,4 @@
-config.json
+setup.json
 /data/*.json
 *.iml
 .idea

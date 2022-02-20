@@ -1,6 +1,5 @@
 #!/usr/bin/python3
-import config
-import json
+import setup
 from prometheus_client import Gauge
 
 
@@ -83,7 +82,7 @@ def end_id(s):
     return
 
 
-conf = config.Config()
+conf = setup.Config()
 
 
 def ds18b20_parse(s, temperature: Gauge):
@@ -96,14 +95,14 @@ def ds18b20_parse(s, temperature: Gauge):
 
     sns = lines[1][0:len(lines[1])-1]       # remove last ";"
     sensors = sns.split(';')
-    filler = ""
     for sensor in sensors:
         items = sensor.split(':')
         if len(items) != 3: raise DataError   # not Sensor:X:YY.ZZ
         sensor_id(items[0])                   # Raise DataError if invalid
         id_value(items[1])                    # Raise DataError if invalid
         temp_value(items[2])                  # Raise DataError if invalid
-        temperature.labels(id=items[1]).set(float(items[2])) # set metrics
+        temperature.labels(id=items[1]).set(float(items[2]))  # set metrics
+        if conf.PRINTMSG == "Y": print("Export : " + items[1] + ' : ' + items[2])
 
 
 def dht22_bmp280_parse(s, climate: Gauge):
@@ -119,9 +118,8 @@ def dht22_bmp280_parse(s, climate: Gauge):
     temp_value(items[7])
     if items[8] != "End": raise DataError
 
-    pressure = float(items[3])
-    climate.labels(id="Pressure").set(pressure)
-    humidity = float(items[5])
-    climate.labels(id="Humidity").set(humidity)
-    climatetemp = float(items[7])
-    climate.labels(id="Temperature").set(climatetemp)
+    climate.labels(id="Pressure").set(float(items[3]))
+    climate.labels(id="Humidity").set(float(items[5]))
+    climate.labels(id="Temperature").set(float(items[7]))
+    if conf.PRINTMSG == "Y":
+        print("Export Pressure: " + items[3] + ' : Humidity: ' + items[5] + ' : Temperature: ' + items[7])
