@@ -2,10 +2,10 @@
   "DEVICE" : "/dev/ttyUSB0",
   "PORT" : 7991,
   "LOCATION" : "PI-1",
-  "SENSOR" : "ds18b20",
+  "SENSOR" : "dht22_bmp280",
   "BUFFERSIZE" : 220,
   "READSPEED" : 9600,
   "TIMEOUT" : 5,
-  "TESTDIR" : "/home/christer/new_work/mobileTemperatureClient/test/",
+  "TESTDIR" : "/home/christer/work/climateDataExporter/test/",
   "PRINTMSG" : "Y"
 }

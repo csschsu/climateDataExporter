@@ -1,6 +1,7 @@
 #!/usr/bin/python3
 import config
 import json
+from prometheus_client import Gauge
 
 
 class DataError(Exception):
@@ -85,10 +86,9 @@ def end_id(s):
 conf = config.Config()
 
 
-def ds18b20_parse(s):
+def ds18b20_parse(s, temperature: Gauge):
     # Arduino message @see test/1.ok
 
-    it = '{ "values" : ['
     lines = s.split('---')
     if len(lines) < 2: raise DataError
     if not lines[1].startswith("Sensor"): raise DataError
@@ -99,17 +99,14 @@ def ds18b20_parse(s):
     filler = ""
     for sensor in sensors:
         items = sensor.split(':')
-        if len(items) != 3: raise DataError  # not Sensor:X:YY.ZZ
-        sensor_id(items[0])
-        id_value(items[1])
-        temp_value(items[2])
-        it = it + filler + '{ "id" : "' + items[1] + '", "temp" : ' + items[2] + '}'
-        filler = ","
-    it = it + ']}'
-    return json.loads(it)
+        if len(items) != 3: raise DataError   # not Sensor:X:YY.ZZ
+        sensor_id(items[0])                   # Raise DataError if invalid
+        id_value(items[1])                    # Raise DataError if invalid
+        temp_value(items[2])                  # Raise DataError if invalid
+        temperature.labels(id=items[1]).set(float(items[2])) # set metrics
 
 
-def dht22_bmp280_parse(s):
+def dht22_bmp280_parse(s, climate: Gauge):
     # Arduino MixedSensor code
     items = s.split(':')
     if len(items) < 9: raise DataError
@@ -122,8 +119,9 @@ def dht22_bmp280_parse(s):
     temp_value(items[7])
     if items[8] != "End": raise DataError
 
-    it = '{ "values" : [' + '{' + '"' + items[2] + '" :' + items[3] + ',' \
-         + '"' + items[4] + '" :' + items[5] + ',' \
-         + '"' + items[6] + '" :' + items[7] + '}]}'
-
-    return json.loads(it)
+    pressure = float(items[3])
+    climate.labels(id="Pressure").set(pressure)
+    humidity = float(items[5])
+    climate.labels(id="Humidity").set(humidity)
+    climatetemp = float(items[7])
+    climate.labels(id="Temperature").set(climatetemp)
