@@ -2,7 +2,7 @@
   "DEVICE" : "/dev/ttyUSB0",
   "PORT" : 7991,
   "LOCATION" : "PI-1",
-  "SENSOR" : "dht22_bmp280",
+  "SENSOR" : "one of ds18b20 or dht22_bmp280",
   "BUFFERSIZE" : 220,
   "READSPEED" : 9600,
   "TIMEOUT" : 5,

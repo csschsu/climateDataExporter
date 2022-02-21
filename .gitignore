@@ -1,3 +1,4 @@
+climateArduinoExporter.service
 setup.json
 /data/*.json
 *.iml

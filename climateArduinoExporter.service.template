@@ -1,0 +1,13 @@
+[Unit]
+Description=Climate data server daemon
+
+[Service]
+StandardOutput=append:/home/christer/work/climateArduinoExporter/out.log
+StandardError=append:/home/christer/work/climateArduinoExporter/out.log
+ExecStart=/home/christer/work/mobileTemperatureServer/climateArduinoExporter.py
+KillMode=process
+Restart=on-failure
+RestartSec=60s
+
+[Install]
+WantedBy=multi-user.target
