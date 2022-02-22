@@ -49,6 +49,7 @@ def read_arduino():
 if __name__ == '__main__':
     # Start up the prometheus metrics server, see
     # http://<host>:PORT to expose the metrics.
+    print ('Start climateArduinoExporter listening on port : ' + str(conf.PORT) + ' and arduino ' + conf.DEVICE)
     start_http_server(conf.PORT)
     while True:
         read_arduino()
