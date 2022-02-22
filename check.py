@@ -86,40 +86,41 @@ conf = setup.Config()
 
 
 def ds18b20_parse(s, temperature: Gauge):
-    # Arduino message @see test/1.ok
+    # Arduino message #'Locating devices...Found 3 devices.
+    # #
+    # #---ds18b20:Sensor:1:22.25;Sensor:2:22.37;Sensor:3:22.31;---'
 
     lines = s.split('---')
     if len(lines) < 2: raise DataError
-    if not lines[1].startswith("Sensor"): raise DataError
+    if not lines[1].startswith("ds18b20"): return   # not ds18b20 arduino sensor setup
     if not lines[1].endswith(";"): raise DataError
-
-    sns = lines[1][0:len(lines[1])-1]       # remove last ";"
-    sensors = sns.split(';')
-    for sensor in sensors:
-        items = sensor.split(':')
+    sensors = lines[1].split(';')
+    for idx in range(1, len(sensors)-1):
+        items = sensors[idx].split(':')
         if len(items) != 3: raise DataError   # not Sensor:X:YY.ZZ
         sensor_id(items[0])                   # Raise DataError if invalid
         id_value(items[1])                    # Raise DataError if invalid
         temp_value(items[2])                  # Raise DataError if invalid
-        temperature.labels(id=items[1]).set(float(items[2]))  # set metrics
+        temperature.labels(id=items[1], location=conf.LOCATION).set(float(items[2]))  # set metrics
         if conf.PRINTMSG == "Y": print("Export : " + items[1] + ' : ' + items[2])
 
 
 def dht22_bmp280_parse(s, climate: Gauge):
     # Arduino MixedSensor code
     items = s.split(':')
-    if len(items) < 9: raise DataError
-    if items[1] != "Start": raise DataError
-    if items[2] != "Pressure": raise DataError
-    pressure_value(items[3])
-    if items[4] != "Humidity": raise DataError
-    humidity_value(items[5])
-    if items[6] != "Temperature": raise DataError
-    temp_value(items[7])
-    if items[8] != "End": raise DataError
+    if items[1] != "dht22_bmp280": return   # not dht22_bmp280 arduino sensor setup
+    if len(items) < 10: raise DataError
+    if items[2] != "Start": raise DataError
+    if items[3] != "Pressure": raise DataError
+    pressure_value(items[4])
+    if items[5] != "Humidity": raise DataError
+    humidity_value(items[6])
+    if items[7] != "Temperature": raise DataError
+    temp_value(items[8])
+    if items[9] != "End": raise DataError
 
-    climate.labels(id="Pressure").set(float(items[3]))
-    climate.labels(id="Humidity").set(float(items[5]))
-    climate.labels(id="Temperature").set(float(items[7]))
+    climate.labels(id="Pressure", location=conf.LOCATION).set(float(items[3]))
+    climate.labels(id="Humidity", location=conf.LOCATION).set(float(items[5]))
+    climate.labels(id="Temperature", location=conf.LOCATION).set(float(items[7]))
     if conf.PRINTMSG == "Y":
         print("Export Pressure: " + items[3] + ' : Humidity: ' + items[5] + ' : Temperature: ' + items[7])

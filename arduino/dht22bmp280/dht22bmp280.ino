@@ -110,29 +110,13 @@ void loop() {
   if (isnan(event.temperature)) {
     Serial.println(F("Error reading temperature!"));
   }
-  else {
-  //  Serial.print(F("Temperature: "));
-  //  Serial.print(event.temperature);
-  //  Serial.println(F("°C"));
-  }
   // Get humidity event and print its value.
   dht.humidity().getEvent(&event);
   if (isnan(event.relative_humidity)) {
     Serial.println(F("Error reading humidity!"));
   }
-  else {
-    //Serial.print(F("Humidity: "));
-    //Serial.print(event.relative_humidity);
-    //Serial.println(F("%"));
-  }
-  //Serial.print(F("Temperature = "));
-  //Serial.print(temp_event.temperature);
-  //Serial.println(" *C");
 
-  //Serial.print(F("Pressure = "));
-  //Serial.print(pressure_event.pressure);
-  //Serial.println(" hPa");
-
+  Serial.print(F(":dht22bmp280:"));
   Serial.print(F(":Start:"));
   Serial.print(F("Pressure:"));
   Serial.print(pressure_event.pressure);

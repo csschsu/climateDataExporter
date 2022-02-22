@@ -9,9 +9,9 @@ from check import DataError
 from check import ds18b20_parse
 from check import dht22_bmp280_parse
 
-climate = Gauge('climate_values', 'Pressure in hPa from bmp280, temp in celcius from DHT22,'
-                                     ' humidity in % from bmp280 ', ['id'])
-temperature = Gauge('temperature_value', 'Temperature readings from ds18b20', ['id'])
+climate = Gauge('climate_values', 'Pressure in hPa from bmp280, temp in celsius from DHT22,'
+                                  ' humidity in % from bmp280 ', ['id', 'location'])
+temperature = Gauge('temperature_value', 'Temperature readings from ds18b20', ['id', 'location'])
 conf = Config()
 
 
@@ -23,20 +23,13 @@ def read_serial():
 
 
 def read_arduino():
+    buff = ''
     try:
-
         buff = read_serial()
         if conf.PRINTMSG == "Y": print(buff)
 
-        if conf.SENSOR == "ds18b20":
-            values = ds18b20_parse(buff, temperature)
-
-        elif conf.SENSOR == "dht22_bmp280":
-            dht22_bmp280_parse(buff, climate) # TODO not fully supported yet
-
-        else:
-            buff = "unknown sensor"
-            raise DataError
+        ds18b20_parse(buff, temperature)   # check if data from ds18b20 is available
+        dht22_bmp280_parse(buff, climate)  # check if data from dht22_bmp280 is available
 
     except UnicodeError:
         print("Error reading arduino'")
@@ -53,8 +46,9 @@ def read_arduino():
 
 
 if __name__ == '__main__':
-    # Start up the server to expose the metrics.
-    start_http_server(7991)
+    # Start up the prometheus metrics server, see
+    # http://<host>:PORT to expose the metrics.
+    start_http_server(conf.PORT)
     while True:
         read_arduino()
-        time.sleep(10)
+        time.sleep(20)
