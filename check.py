@@ -107,6 +107,9 @@ def ds18b20_parse(s, temperature: Gauge):
 
 def dht22bmp280_parse(s, climate: Gauge):
     # Arduino MixedSensor code
+    #    BMP280 Sensor event test
+    #---:dht22bmp280:Start:Pressure:1003.02:Humidity:31.30:Temperature:24.27:End:---
+
     lines = s.split('---')
     if len(lines) < 2: raise DataError
     items = lines[1].split(':')
