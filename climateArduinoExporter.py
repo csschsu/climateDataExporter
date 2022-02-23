@@ -7,7 +7,7 @@ import serial
 from setup import Config
 from check import DataError
 from check import ds18b20_parse
-from check import dht22_bmp280_parse
+from check import dht22bmp280_parse
 
 
 climate = Gauge('climate_values', 'Pressure in hPa from bmp280, temp in celsius from DHT22,'
@@ -30,7 +30,7 @@ def read_arduino():
         if conf.PRINTMSG == "Y": print(buff)
 
         ds18b20_parse(buff, temperature)   # check if data from ds18b20 is available
-        dht22_bmp280_parse(buff, climate)  # check if data from dht22_bmp280 is available
+        dht22bmp280_parse(buff, climate)  # check if data from dht22_bmp280 is available
 
     except UnicodeError:
         print("Error reading arduino'")

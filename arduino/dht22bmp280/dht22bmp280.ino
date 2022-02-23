@@ -116,8 +116,9 @@ void loop() {
     Serial.println(F("Error reading humidity!"));
   }
 
+  Serial.print(F("---"));
   Serial.print(F(":dht22bmp280:"));
-  Serial.print(F(":Start:"));
+  Serial.print(F("Start:"));
   Serial.print(F("Pressure:"));
   Serial.print(pressure_event.pressure);
   Serial.print(F(":Humidity:"));
@@ -125,6 +126,7 @@ void loop() {
   Serial.print(F(":Temperature:"));
   Serial.print(temp_event.temperature);
   Serial.print(F(":End:"));
+  Serial.print(F("---"));
   Serial.println();
   
   delay(5000);
