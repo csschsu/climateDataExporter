@@ -5,3 +5,4 @@ setup.json
 .idea
 .idea/*
 out.log
+push_data.py

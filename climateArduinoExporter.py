@@ -1,6 +1,8 @@
 #!/usr/bin/python3
 
 from prometheus_client import start_http_server, Gauge
+from prometheus_client import CollectorRegistry, Gauge, push_to_gateway
+
 import datetime, time
 import json
 import serial
@@ -10,9 +12,11 @@ from check import ds18b20_parse
 from check import dht22bmp280_parse
 
 
+registry = CollectorRegistry()
 climate = Gauge('climate_values', 'Pressure in hPa from bmp280, temp in celsius from DHT22,'
-                                  ' humidity in % from bmp280 ', ['id', 'location'])
-temperature = Gauge('temperature_value', 'Temperature readings from ds18b20', ['id', 'location'])
+                                  ' humidity in % from bmp280 ', ['id', 'location'], registry=registry)
+temperature = Gauge('temperature_value', 'Temperature readings from ds18b20', ['id', 'location'], registry=registry)
+
 conf = Config()
 
 
@@ -29,8 +33,10 @@ def read_arduino():
         buff = read_serial()
         if conf.PRINTMSG == "Y": print(buff)
 
-        ds18b20_parse(buff, temperature)   # check if data from ds18b20 is available
-        dht22bmp280_parse(buff, climate)  # check if data from dht22_bmp280 is available
+        ds18b20_parse(buff, temperature)   # check from ds18b20 and expose as metrics
+        dht22bmp280_parse(buff, climate)   # check from dht22bmp280 and expose as metrics
+
+        if conf.PUSHGATEWAY != "" : push_to_gateway('conf.PUSHGATEWAY', job='batchA', registry=registry)
 
     except UnicodeError:
         print("Error reading arduino'")
@@ -50,7 +56,8 @@ if __name__ == '__main__':
     # Start up the prometheus metrics server, see
     # http://<host>:PORT to expose the metrics.
     print ('Start climateArduinoExporter listening on port : ' + str(conf.PORT) + ' and arduino ' + conf.DEVICE)
-    start_http_server(conf.PORT)
+    #start_http_server(conf.PORT)
+    start_http_server(7999)
     while True:
         read_arduino()
-        time.sleep(20)
+        time.sleep(60)
