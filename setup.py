@@ -11,9 +11,9 @@ class Config:
             self.CONNECTION = data["CONNECTION"]    # One of PUSH, PULL ( registry diff )
             self.PORT = data["PORT"]                # this API endpoint
             self.DEVICE = data["DEVICE"]            # arduino device ie /dev/ttyACM0 ( uno ), /dev/ttyUSB0 (nano)
-            self.PUSHGATEWAY = data["PUSHGATEWAY"],  # http//:<host>name:9091
-            self.SLEEPSECONDS = data["SLEEPSECONDS"],  # time between measurements
-            self.LOCATION = data["LOCATION"]        # kök
+            self.PUSHGATEWAY = data["PUSHGATEWAY"]  # http//:<host>name:9091
+            self.SLEEPSECONDS = data["SLEEPSECONDS"]  # time between measurements
+            self.LOCATION = data["LOCATION"]        # pi-x
             self.BUFFERSIZE = data["BUFFERSIZE"]    # 200 bytes per read
             self.READSPEED = data["READSPEED"]      # 9600 (baud)
             self.TIMEOUT = data["TIMEOUT"]          # 5 (seconds)

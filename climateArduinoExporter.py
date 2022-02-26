@@ -10,20 +10,23 @@ from setup import Config
 from check import DataError
 from check import ds18b20_parse
 from check import dht22bmp280_parse
+from check import logmsg
 
 conf = Config()
 
 # PUSH and PULL CollectorRegistry are different and can't be mixed ?!?
 # If you need both start two instances one for PULL and another for PUSH
-registry = CollectorRegistry() # Used by PUSH, PULL has :default
-if conf.CONNECTION == "PUSH":     # Setup and local instance with prometheus PUSHGATEWAY
+registry = CollectorRegistry()  # Used by PUSH, PULL has :default
+if conf.CONNECTION == "PUSH":  # Setup and local instance with prometheus PUSHGATEWAY
     climate = Gauge('climate_values', 'Pressure in hPa from bmp280, temp in celsius from DHT22,'
+
                                       ' humidity in % from bmp280 ', ['id', 'location'], registry=registry)
     temperature = Gauge('temperature_value', 'Temperature readings from ds18b20', ['id', 'location'], registry=registry)
-else :
+else:
     climate = Gauge('climate_values', 'Pressure in hPa from bmp280, temp in celsius from DHT22,'
-                              ' humidity in % from bmp280 ', ['id', 'location'])
+                                      ' humidity in % from bmp280 ', ['id', 'location'])
     temperature = Gauge('temperature_value', 'Temperature readings from ds18b20', ['id', 'location'])
+
 
 def read_serial():
     ser = serial.Serial(conf.DEVICE, conf.READSPEED, timeout=conf.TIMEOUT)
@@ -36,23 +39,23 @@ def read_arduino():
     buff = ''
     try:
         buff = read_serial()
-        if conf.PRINTMSG == "Y": print(buff)
+        if conf.PRINTMSG == "Y": logmsg(buff)
 
-        ds18b20_parse(buff, temperature)   # check from ds18b20 and expose as metrics
-        dht22bmp280_parse(buff, climate)   # check from dht22bmp280 and expose as metrics
+        ds18b20_parse(buff, temperature)  # check from ds18b20 and expose as metrics
+        dht22bmp280_parse(buff, climate)  # check from dht22bmp280 and expose as metrics
 
     except UnicodeError:
-        print("Error reading arduino'")
+        logmsg("Error reading arduino'")
 
     except json.decoder.JSONDecodeError:
-        print("Error reading arduino, not connected ?'")
+        logmsg("Error reading arduino, not connected ?'")
 
     except serial.serialutil.SerialException:
-        print("Error reading arduino, not connected ?'")
+        logmsg("Error reading arduino, not connected ?'")
 
     except DataError:
-        print(datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S") + " Error in arduino data, data: ")
-        print(buff)
+        logmsg(datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S") + " Error in arduino data, data: ")
+        logmsg(buff)
 
 
 if __name__ == '__main__':
@@ -63,4 +66,4 @@ if __name__ == '__main__':
     while True:
         read_arduino()
         if conf.CONNECTION == "PUSH": push_to_gateway(conf.PUSHGATEWAY, job='batchA', registry=registry)
-        time.sleep(conf.SLEEPSECONDS) # Sleep seconds ( limit: Data transfer on mobilebroadband, ie.60)
+        time.sleep(conf.SLEEPSECONDS)  # Sleep seconds ( limit: Data transfer on mobilebroadband, ie.60)

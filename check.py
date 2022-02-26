@@ -1,5 +1,6 @@
 #!/usr/bin/python3
 import setup
+import datetime
 from prometheus_client import Gauge
 
 
@@ -84,6 +85,10 @@ def end_id(s):
 
 conf = setup.Config()
 
+def logmsg( msg : str):
+    print(datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S ") + msg)
+
+
 
 def ds18b20_parse(s, temperature: Gauge):
     # Arduino message #'Locating devices...Found 3 devices.
@@ -102,7 +107,7 @@ def ds18b20_parse(s, temperature: Gauge):
         id_value(items[1])                    # Raise DataError if invalid
         temp_value(items[2])                  # Raise DataError if invalid
         temperature.labels(id=items[1], location=conf.LOCATION).set(float(items[2]))  # set metrics
-        if conf.PRINTMSG == "Y": print("Export : " + items[1] + ' : ' + items[2])
+        if conf.PRINTMSG == "Y": logmsg("Export : " + items[1] + ' : ' + items[2])
 
 
 def dht22bmp280_parse(s, climate: Gauge):
@@ -129,4 +134,4 @@ def dht22bmp280_parse(s, climate: Gauge):
     climate.labels(id="Humidity", location=conf.LOCATION).set(float(items[6]))
     climate.labels(id="Temperature", location=conf.LOCATION).set(float(items[8]))
     if conf.PRINTMSG == "Y":
-        print("Export Pressure: " + items[4] + ' : Humidity: ' + items[6] + ' : Temperature: ' + items[8])
+        logmsg("Export Pressure: " + items[4] + ' : Humidity: ' + items[6] + ' : Temperature: ' + items[8])
