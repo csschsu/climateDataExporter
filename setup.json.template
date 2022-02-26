@@ -1,7 +1,26 @@
+// PULL example ( prometheus reading <thishost>:<thisport> )
+{
+  "DEVICE" : "/dev/ttyACM0",
+  "CONNECTION" : "PULL",
+  "SLEEPSECONDS" : 30,
+  "PORT" : 7999,
+  "PUSHGATEWAY" : "",
+  "LOCATION" : "UB-1",
+  "BUFFERSIZE" : 220,
+  "READSPEED" : 9600,
+  "TIMEOUT" : 5,
+  "TESTDIR" : "/home/christer/work/climateDataExporter/test/",
+  "PRINTMSG" : "Y"
+}
+
+// PUSH example ( PUSH to prometheus pushgateway)
 {
   "DEVICE" : "/dev/ttyUSB0",
-  "PORT" : 7991,
-  "LOCATION" : "PI-1",
+  "CONNECTION" : "PUSH",
+  "SLEEPSECONDS" : 30,
+  "PORT" : 0,
+  "PUSHGATEWAY" : "localhost:9091",
+  "LOCATION" : "UB-1",
   "BUFFERSIZE" : 220,
   "READSPEED" : 9600,
   "TIMEOUT" : 5,
