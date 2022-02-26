@@ -1,4 +1,5 @@
 #!/usr/bin/python3
+import errno
 
 from prometheus_client import start_http_server, Gauge
 from prometheus_client import CollectorRegistry, push_to_gateway
@@ -11,6 +12,7 @@ from check import DataError
 from check import ds18b20_parse
 from check import dht22bmp280_parse
 from check import logmsg
+from urllib.error import URLError
 
 conf = Config()
 
@@ -58,6 +60,13 @@ def read_arduino():
         logmsg(buff)
 
 
+def send_data():
+    try:
+        push_to_gateway(conf.PUSHGATEWAY, job='batchA', registry=registry)
+    except URLError as e:
+        logmsg("Pushgateway error, code : " + str(errno.errorcode))
+
+
 if __name__ == '__main__':
     # Start up the prometheus metrics server, see
     # http://<host>:PORT to expose the metrics.
@@ -65,5 +74,5 @@ if __name__ == '__main__':
     if conf.CONNECTION != "PUSH": start_http_server(conf.PORT)  # Start a local instance queried by prometheus
     while True:
         read_arduino()
-        if conf.CONNECTION == "PUSH": push_to_gateway(conf.PUSHGATEWAY, job='batchA', registry=registry)
+        if conf.CONNECTION == "PUSH": send_data()
         time.sleep(conf.SLEEPSECONDS)  # Sleep seconds ( limit: Data transfer on mobilebroadband, ie.60)
