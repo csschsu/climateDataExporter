@@ -121,8 +121,9 @@ def dht22bmp280_parse(s, climate: Gauge):
     lines = s.split('---')
     if len(lines) < 2: raise DataError
     items = lines[1].split(':')
+    if len(items) < 3: raise DataError
+    if not items[1].startswith("dht22bmp280"): return  # not dht22_bmp280 arduino sensor setup
     if len(items) < 10: raise DataError
-    if not items[1].startswith("dht22bmp280"): exit()  # not dht22_bmp280 arduino sensor setup
     if items[2] != "Start": raise DataError
     if items[3] != "Pressure": raise DataError
     pressure_value(items[4])
