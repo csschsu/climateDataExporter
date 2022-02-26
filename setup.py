@@ -12,6 +12,7 @@ class Config:
             self.PORT = data["PORT"]                # this API endpoint
             self.DEVICE = data["DEVICE"]            # arduino device ie /dev/ttyACM0 ( uno ), /dev/ttyUSB0 (nano)
             self.PUSHGATEWAY = data["PUSHGATEWAY"]  # http//:<host>name:9091
+            self.PUSHGATEWAY_JOBNAME = data["PUSHGATEWAY_JOBNAME"]  # example batchA (Jobname in prometeus)
             self.SLEEPSECONDS = data["SLEEPSECONDS"]  # time between measurements
             self.LOCATION = data["LOCATION"]        # pi-x
             self.BUFFERSIZE = data["BUFFERSIZE"]    # 200 bytes per read

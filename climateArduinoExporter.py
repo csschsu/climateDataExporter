@@ -1,5 +1,4 @@
 #!/usr/bin/python3
-import errno
 
 from prometheus_client import start_http_server, Gauge
 from prometheus_client import CollectorRegistry, push_to_gateway
@@ -62,9 +61,9 @@ def read_arduino():
 
 def send_data():
     try:
-        push_to_gateway(conf.PUSHGATEWAY, job='batchA', registry=registry)
+        push_to_gateway(conf.PUSHGATEWAY, job=conf.PUSHGATEWAY_JOBNAME, registry=registry)
     except URLError as e:
-        logmsg("Pushgateway error, code : " + str(errno.errorcode))
+        logmsg("Pushgateway error, code : " + str(e.errno))
 
 
 if __name__ == '__main__':
