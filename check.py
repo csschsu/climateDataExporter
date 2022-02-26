@@ -85,9 +85,9 @@ def end_id(s):
 
 conf = setup.Config()
 
-def logmsg( msg : str):
-    print(datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S ") + msg)
 
+def logmsg(msg: str):
+    print(datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S ") + msg)
 
 
 def ds18b20_parse(s, temperature: Gauge):
@@ -97,15 +97,15 @@ def ds18b20_parse(s, temperature: Gauge):
 
     lines = s.split('---')
     if len(lines) < 2: raise DataError
-    if not lines[1].startswith("ds18b20"): return   # not ds18b20 arduino sensor setup
+    if not lines[1].startswith("ds18b20"): return  # not ds18b20 arduino sensor setup
     if not lines[1].endswith(";"): raise DataError
     sensors = lines[1].split(';')
-    for idx in range(1, len(sensors)-1):
+    for idx in range(1, len(sensors) - 1):
         items = sensors[idx].split(':')
-        if len(items) != 3: raise DataError   # not Sensor:X:YY.ZZ
-        sensor_id(items[0])                   # Raise DataError if invalid
-        id_value(items[1])                    # Raise DataError if invalid
-        temp_value(items[2])                  # Raise DataError if invalid
+        if len(items) != 3: raise DataError  # not Sensor:X:YY.ZZ
+        sensor_id(items[0])  # Raise DataError if invalid
+        id_value(items[1])  # Raise DataError if invalid
+        temp_value(items[2])  # Raise DataError if invalid
         temperature.labels(id=items[1], location=conf.LOCATION).set(float(items[2]))  # set metrics
         if conf.PRINTMSG == "Y": logmsg("Export : " + items[1] + ' : ' + items[2])
 
@@ -113,14 +113,16 @@ def ds18b20_parse(s, temperature: Gauge):
 def dht22bmp280_parse(s, climate: Gauge):
     # Arduino MixedSensor code
     #    BMP280 Sensor event test
-    #---:dht22bmp280:Start:Pressure:1003.02:Humidity:31.30:Temperature:24.27:End:---
+    # ---:dht22bmp280:Start:Pressure:1003.02:Humidity:31.30:Temperature:24.27:End:---
+    # s = 'Locating devices...Found 3 devices. ' \
+    #    '' \
+    #    '---ds18b20;Sensor:1:24.37;Sensor:2:23.25;Sensor:3:23.31;---'
 
     lines = s.split('---')
-    if len(lines) < 2 : raise DataError
+    if len(lines) < 2: raise DataError
     items = lines[1].split(':')
-    if len(items) < 0 : raise DataError
-    if items[1] != "dht22bmp280": return   # not dht22_bmp280 arduino sensor setup
     if len(items) < 10: raise DataError
+    if not items[1].startswith("dht22bmp280"): exit()  # not dht22_bmp280 arduino sensor setup
     if items[2] != "Start": raise DataError
     if items[3] != "Pressure": raise DataError
     pressure_value(items[4])
