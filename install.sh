@@ -13,9 +13,9 @@ echo "add user prometheus"
 adduser prometheus --shell=/usr/sbin/nologin --no-create-home
 
 echo "add prometheus group to current user -- require new login to activate"
-usermod -g prometheus $USER
+usermod -a -G prometheus $USER
 echo "add dialout to current user for serial connection to arduino"
-usermod -g dialout $USER
+usermod -a -G dialout $USER
 
 echo "create log directory and allow users in prometheus group to write"
 LOGDIRECTORY="/var/log/climateDataExporter"
