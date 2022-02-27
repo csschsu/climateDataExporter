@@ -88,7 +88,7 @@ conf = setup.Config()
 
 def logmsg(msg: str):
     logfile = open(conf.LOGFILE, 'a')
-    logfile.write(datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S ") + msg)
+    logfile.write(datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S ") + msg + '\n')
     logfile.close()
 
 
