@@ -11,7 +11,8 @@
   "READSPEED" : 9600,
   "TIMEOUT" : 5,
   "TESTDIR" : "/home/christer/work/climateDataExporter/test/",
-  "PRINTMSG" : "Y"
+  "PRINTMSG" : "Y",
+  "LOGFILE" : "/var/log/climateDataExporter/exporter.log"
 }
 
 // PUSH example ( PUSH to prometheus pushgateway)
@@ -27,5 +28,6 @@
   "READSPEED" : 9600,
   "TIMEOUT" : 5,
   "TESTDIR" : "/home/christer/work/climateDataExporter/test/",
-  "PRINTMSG" : "Y"
+  "PRINTMSG" : "Y",
+  "LOGFILE" : "/var/log/climateDataExporter/exporter.log"
 }

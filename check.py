@@ -87,7 +87,9 @@ conf = setup.Config()
 
 
 def logmsg(msg: str):
-    print(datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S ") + msg)
+    logfile = open(conf.LOGFILE, 'a')
+    logfile.write(datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S ") + msg)
+    logfile.close()
 
 
 def ds18b20_parse(s, temperature: Gauge):

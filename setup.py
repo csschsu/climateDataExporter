@@ -20,6 +20,8 @@ class Config:
             self.TIMEOUT = data["TIMEOUT"]          # 5 (seconds)
             self.TESTDIR = data["TESTDIR"]          # Directory for test files
             self.PRINTMSG = data["PRINTMSG"]        # Y/N
+            self.LOGFILE = data["LOGFILE"]         # log file
+
 
 
     def show(self):
