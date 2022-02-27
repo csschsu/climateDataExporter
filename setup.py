@@ -20,3 +20,9 @@ class Config:
             self.TIMEOUT = data["TIMEOUT"]          # 5 (seconds)
             self.TESTDIR = data["TESTDIR"]          # Directory for test files
             self.PRINTMSG = data["PRINTMSG"]        # Y/N
+
+
+    def show(self):
+        with open("setup.json") as json_data_file:
+            data = json.load(json_data_file)
+            return json.dumps(data, indent=3)

@@ -3,7 +3,7 @@
 from prometheus_client import start_http_server, Gauge
 from prometheus_client import CollectorRegistry, push_to_gateway
 
-import datetime, time
+import time
 import json
 import serial
 from setup import Config
@@ -55,7 +55,7 @@ def read_arduino():
         logmsg("Error reading arduino, not connected ?'")
 
     except DataError:
-        logmsg(datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S") + " Error in arduino data, data: ")
+        logmsg("Error in arduino data, data: ")
         logmsg(buff)
 
 
@@ -69,7 +69,7 @@ def send_data():
 if __name__ == '__main__':
     # Start up the prometheus metrics server, see
     # http://<host>:PORT to expose the metrics.
-    print('Start climateArduinoExporter listening on port : ' + str(conf.PORT) + ' and arduino ' + conf.DEVICE)
+    logmsg('Start climateArduinoExporter \n' + conf.show())
     if conf.CONNECTION != "PUSH": start_http_server(conf.PORT)  # Start a local instance queried by prometheus
     while True:
         read_arduino()
