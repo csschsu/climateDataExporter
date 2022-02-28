@@ -140,3 +140,30 @@ def dht22bmp280_parse(s, climate: Gauge):
     climate.labels(id="Temperature", location=conf.LOCATION).set(float(items[8]))
     if conf.PRINTMSG == "Y":
         logmsg("Export Pressure: " + items[4] + ' : Humidity: ' + items[6] + ' : Temperature: ' + items[8])
+
+
+def bmp280_parse(s, climate: Gauge):
+    # Arduino MixedSensor code
+    #    BMP280 Sensor event test
+    # ---:bmp280:Start:Pressure:1003.02:Temperature:24.27:End:---
+    # s = 'Locating devices...Found 3 devices. ' \
+    #    '' \
+    #    '---ds18b20;Sensor:1:24.37;Sensor:2:23.25;Sensor:3:23.31;---'
+
+    lines = s.split('---')
+    if len(lines) < 2: raise DataError
+    items = lines[1].split(':')
+    if len(items) < 3: raise DataError
+    if not items[1].startswith("bmp280"): return  # not bmp280 arduino sensor setup
+    if len(items) < 7: raise DataError
+    if items[2] != "Start": raise DataError
+    if items[3] != "Pressure": raise DataError
+    pressure_value(items[4])
+    if items[5] != "Temperature": raise DataError
+    humidity_value(items[6])
+    if items[7] != "End": raise DataError
+
+    climate.labels(id="Pressure", location=conf.LOCATION).set(float(items[4]))
+    climate.labels(id="Temperature", location=conf.LOCATION).set(float(items[6]))
+    if conf.PRINTMSG == "Y":
+        logmsg("Export Pressure: " + items[4] + ' : Temperature: ' + items[6])

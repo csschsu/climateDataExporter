@@ -10,6 +10,7 @@ from setup import Config
 from check import DataError
 from check import ds18b20_parse
 from check import dht22bmp280_parse
+from check import bmp280_parse
 from check import logmsg
 from urllib.error import URLError
 
@@ -44,6 +45,7 @@ def read_arduino():
 
         ds18b20_parse(buff, temperature)  # check from ds18b20 and expose as metrics
         dht22bmp280_parse(buff, climate)  # check from dht22bmp280 and expose as metrics
+        bmp280_parse(buff, climate)  # check from bmp280 and expose as metrics
 
     except UnicodeError:
         logmsg("Error reading arduino'")
