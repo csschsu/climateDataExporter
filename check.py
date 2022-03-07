@@ -97,6 +97,7 @@ def ds18b20_parse(s, temperature: Gauge):
     # #
     # #---ds18b20:Sensor:1:22.25;Sensor:2:22.37;Sensor:3:22.31;---'
 
+    if s.find('---ds18b20') == -1: return
     lines = s.split('---')
     if len(lines) < 2: raise DataError
     if not lines[1].startswith("ds18b20"): return  # not ds18b20 arduino sensor setup
@@ -120,11 +121,12 @@ def dht22bmp280_parse(s, climate: Gauge):
     #    '' \
     #    '---ds18b20;Sensor:1:24.37;Sensor:2:23.25;Sensor:3:23.31;---'
 
+    if s.find('---:dht22bmp280') == -1: return   # not this sensor
     lines = s.split('---')
     if len(lines) < 2: raise DataError
     items = lines[1].split(':')
     if len(items) < 3: raise DataError
-    if not items[1].startswith("dht22bmp280"): return  # not dht22_bmp280 arduino sensor setup
+    if not items[1].startswith("dht22bmp280"): return
     if len(items) < 10: raise DataError
     if items[2] != "Start": raise DataError
     if items[3] != "Pressure": raise DataError
@@ -150,6 +152,7 @@ def bmp280_parse(s, climate: Gauge):
     #    '' \
     #    '---ds18b20;Sensor:1:24.37;Sensor:2:23.25;Sensor:3:23.31;---'
 
+    if s.find('---bmp280') == -1: return   # not this sensor
     lines = s.split('---')
     if len(lines) < 2: raise DataError
     items = lines[1].split(':')
