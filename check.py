@@ -152,7 +152,7 @@ def bmp280_parse(s, climate: Gauge):
     #    '' \
     #    '---ds18b20;Sensor:1:24.37;Sensor:2:23.25;Sensor:3:23.31;---'
 
-    if s.find('---bmp280') == -1: return   # not this sensor
+    if s.find('---:bmp280') == -1: return   # not this sensor
     lines = s.split('---')
     if len(lines) < 2: raise DataError
     items = lines[1].split(':')
